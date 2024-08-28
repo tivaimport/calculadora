@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CALCULADORA DE FILTRO HMEF 48H</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #007BFF; /* Fundo azul */
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+        }
+        input, button {
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #004085;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form id="dataForm">
+        <div class="hidden">
+            <input type="number" id="quantidadePorCaixa" value="200" />
+            <input type="number" id="pesoUnitario" value="8" step="0.01" />
+            <input type="number" id="comprimento" value="58" step="0.01" />
+            <input type="number" id="largura" value="36" step="0.01" />
+            <input type="number" id="altura" value="40" step="0.01" />
+        </div>
+
+        <label for="quantidade">Quantidade de Produtos:</label>
+        <input type="number" id="quantidade" required />
+
+        <button type="button" onclick="calculateData()">Calcular Dados</button>
+    </form>
+
+    <div id="results">
+        <h2>Resultados</h2>
+        <div id="resultDetails"></div>
+    </div>
+
+    <script>
+        function calculateData() {
+            // Obter os valores dos campos de entrada
+            const quantidade = parseFloat(document.getElementById('quantidade').value);
+            const quantidadePorCaixa = parseFloat(document.getElementById('quantidadePorCaixa').value);
+            const pesoUnitario = parseFloat(document.getElementById('pesoUnitario').value);
+            const comprimento = parseFloat(document.getElementById('comprimento').value) / 100; // Convertendo para metros
+            const largura = parseFloat(document.getElementById('largura').value) / 100; // Convertendo para metros
+            const altura = parseFloat(document.getElementById('altura').value) / 100; // Convertendo para metros
+
+            // Validar se todos os valores foram inseridos corretamente
+            if (isNaN(quantidade) || quantidade <= 0 || 
+                isNaN(quantidadePorCaixa) || quantidadePorCaixa <= 0 || 
+                isNaN(pesoUnitario) || pesoUnitario <= 0 || 
+                isNaN(comprimento) || comprimento <= 0 || 
+                isNaN(largura) || largura <= 0 || 
+                isNaN(altura) || altura <= 0) {
+                alert('Por favor, preencha todos os campos corretamente.');
+                return;
+            }
+
+            // Cálculo da cubagem unitária
+            const cubagemUnitario = comprimento * largura * altura; // Cubagem em m³
+
+            // Cálculos
+            const quantidadeCaixas = Math.ceil(quantidade / quantidadePorCaixa);
+            const pesoTotal = quantidadeCaixas * pesoUnitario;
+            const cubagemTotal = quantidadeCaixas * cubagemUnitario;
+
+            // Exibir resultados
+            const resultDetails = `
+                <div class="result-item">
+                    <span>${quantidade.toLocaleString()} UND FILTROS HMEF 48H C/${quantidadePorCaixa} UND</span>
+                </div>
+                <div class="result-item">
+                    <span>TOTAL DE CAIXAS:</span> ${quantidadeCaixas} CX
+                </div>
+                <div class="result-item">
+                    <span>PESO TOTAL:</span> ${pesoTotal.toFixed(2)} KG
+                </div>
+                <div class="result-item">
+                    <span>CUBAGEM TOTAL:</span> ${cubagemTotal.toFixed(4)}
+                </div>
+                <div class="result-item">
+                    <span>MEDIDA DA CAIXA:</span> ${document.getElementById('comprimento').value}x${document.getElementById('largura').value}x${document.getElementById('altura').value} cm
+                </div>
+            `;
+
+            document.getElementById('resultDetails').innerHTML = resultDetails;
+        }
+    </script>
+</body>
+</html>
